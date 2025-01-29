@@ -1,47 +1,43 @@
 import BookList from "./BookList";
-import {useState} from'react'
-
+import {useState,useEffect} from'react'
+// useEffect(()=>{},[]);
 function BookApp(){
     // define an array of objects 
-    const [booksData,setBooksData]=useState([
-        {
-            id: 1,
-            title: '1984',
-            author: 'George Orwell',
-            publicationYear: 1949,
-            genre: 'Dystopian',
-            coverImage: '/george.jpeg',
-            rating: 4.5,
-          },
-          {
-            id: 2,
-            title: 'Brave New World',
-            author: 'Aldous Huxley',
-            publicationYear: 1932,
-            genre: 'Science Fiction',
-            coverImage:'/Brave.jpg',
-            rating:4.2
-            
-          },
-          {
-            id: 3,
-            title: 'Fahrenheit 451',
-            author: 'Ray Bradbury',
-            publicationYear: 1953,
-            genre: 'Science Fiction',
-            coverImage: '/g.jpg',
-            rating: 4.0,
-          },
-      
-      
+    const [booksData,setBooksData]=useState([]);
 
-    ]);
+    // fetch the data once using the useEffect
+    useEffect(()=>{
+        // We will fetch from our local JSON Server endpoint 
+        fetch('http://localhost:3000/books')
+          .then((response)=>{
+            return response.json()
+          })
+          .then((data)=>{
+            setBooksData(data);
+          })
+          .catch((error)=>{
+            console.error('Error fetching books:',error)
+          });
+    },[])
     // function that removes  a book from the array by id 
 
     const removeBook=(bookId)=>{
-        const updatedBooks= booksData.filter(book=>book.id!==bookId);
-        setBooksData(updatedBooks);
+      // send a DELETE request to the JSON Server 
+      fetch(`http://localhost:3000/books/${bookId}`,{
+        method:'DELETE',
+      })
+      .then((response)=>{
+          if(!response.ok){
+          throw new Error ('Failed to delete a book ');
 
+        }
+        setBooksData((prevBooks)=>{
+          return prevBooks.filter((book)=>book.id!==bookId);
+        })
+      })
+      .catch((error)=>{
+        console.error('Error deleting books:',error)
+      })
     }
    
     return (

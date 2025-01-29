@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 function BookItem(props){
     const {id,
         title,
@@ -18,6 +20,7 @@ function BookItem(props){
             <p>Published in {publicationYear}</p>
             <p>Genre:{genre}</p>
             <p>Rating:{rating}</p>
+            <Link to={`/books/${id}`}>View Details </Link>
             <button onClick={handleRemove}>Remove Book</button>
 
         </div>
